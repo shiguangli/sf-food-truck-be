@@ -9,7 +9,7 @@ export class FoodTruckController {
   async search (
     @Query('input') input: string = ''
   ) {
-    const result = input ? (await this.foodTruckService.getListByUserInput(input)) : [];
+    const result = await this.foodTruckService.getListByUserInput(input);
     return result;
   }
 }
