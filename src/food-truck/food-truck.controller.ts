@@ -9,7 +9,16 @@ export class FoodTruckController {
   async search (
     @Query('input') input: string = ''
   ) {
-    const result = input ? (await this.foodTruckService.getListByUserInput(input)) : [];
-    return result;
+    const output = input ? (await this.foodTruckService.getListByUserInput(input)) : [];
+    return output;
+  }
+
+  @Get('/convert-rsql-to-ast')
+  async convertRsqlToAst (
+    @Query('input') input: string = ''
+  ) {
+    const output = await this.foodTruckService.analyzeRsqlString(input)
+    console.log(`ft ctrl - convert - input: ${input} -- output: ${output}`)
+    return output
   }
 }
