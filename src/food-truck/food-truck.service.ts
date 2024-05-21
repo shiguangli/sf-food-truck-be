@@ -11,19 +11,20 @@ const rsqlOperators = [`==`, `!=`, `<`, `>`, `<=`, `>=`, `=in=`, `=out=`]
 export class FoodTruckService {
   analyzeRsqlString(rsqlString: string): any {
     const exp = parse(rsqlString)
-    console.log(`ft srv - alz rsql - ${exp} (${typeof exp})`)
-    // TODO: 转成json格式
-    // return exp
-    return {}
+    // console.log(`ft srv - alz rsql - ${exp} (${typeof exp}: ${Object.keys(exp)})`)
+    // 转成json格式
+    const r = Object.assign({}, exp)
+    // Object.keys(exp).forEach(k => { r[k] = exp[k] })
+    return r
   }
   analyzeAst (o: any): any {
     let r = {}
     const _t = o?.type.toUpperCase()
-    if (_t === 'COMPARISON') {
+    if (_t.includes('COMPAR')) {
       let _k = o?.left?.selector
       let _v = o?.right?.value
       r[_k] = o?.operator === '==' ? _v : `${o?.operator} ${_v}`
-    } else if (_t === 'LOGICAL') {
+    } else if (_t.includes('LOGIC')) {
       const r1 = this.analyzeAst(o.left)
       const r2 = this.analyzeAst(o.right)
       r = Object.assign(r, r1, r2)
@@ -44,8 +45,9 @@ export class FoodTruckService {
 
     if (isRsql) {
       const ast = this.analyzeRsqlString(input)
-      console.log(`ft srv - isRsql - ast: ${ast}`)
+      // console.log(`ft srv - isRsql - ast: ${JSON.stringify(ast)}`)
       const fields = this.analyzeAst(ast)
+      // console.log(`ft srv - isRsql - fields: ${JSON.stringify(fields)}`)
       const compareFields = Object.keys(fields)
       mobileFoodTruckData.filter((truck) => {
         compareFields.forEach(field => {
@@ -77,7 +79,7 @@ export class FoodTruckService {
         }
         if (r) { result.push(truck) }
       })
-      return result
     }
+    return result
   }
 }
