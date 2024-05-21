@@ -32,7 +32,9 @@ export class FoodTruckService {
     return r
   }
 
-  getListByUserInput(input): any[] {
+  getListByUserInput(input: string): any[] {
+    if (input.trim() == '') { return mobileFoodTruckData }
+    
     // 判断input是否为RSQL字符串（包含特殊字符）
     let isRsql = false
     rsqlOperators.forEach(o => {
